@@ -1,0 +1,1 @@
+default_app_config = 'life_cycle_canvas.apps.LifeCycleCanvasConfig'
