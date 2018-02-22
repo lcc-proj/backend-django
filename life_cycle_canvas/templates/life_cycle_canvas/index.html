@@ -21,6 +21,8 @@
                 }
                 return false;
             });
+
+            $('[data-toggle="tooltip"]').tooltip();
         });
     </script>
 
@@ -51,12 +53,12 @@
             background: yellow;
             border-radius: 10px;
             min-height: 60px;
+            text-align: left;
         }
 
         .box-postit > .box-conteudo p {
             padding: 10px;
             font-size: 14px;
-            text-align: left;
         }
 
         .box-roxo > .box-titulo {
@@ -103,6 +105,24 @@
             font-size: 11px;
         }
 
+        .box-postit.mudanca > .box-conteudo {
+            background: lightpink;
+            border-radius: 10px;
+            min-height: 60px;
+            text-align: left;
+        }
+
+        .box-postit.mudanca > .box-conteudo p {
+            font-size: 12px;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .box-postit.mudanca > .box-conteudo p .btn {
+            font-size: 10px;
+            float: left;
+        }
+
         .input-group-text {
             border: none;
             background: #964ba2;
@@ -147,6 +167,14 @@
         .vermelho {
             background: red;
         }
+
+        .box-conteudo.riscado {
+            background: lightgoldenrodyellow;
+        }
+
+        .box-conteudo.riscado > p {
+            text-decoration: line-through;
+        }
     </style>
 </head>
 <body>
@@ -155,7 +183,7 @@
     <div class="row mt-4">
         <div class="col-sm mb-4">
             <div class="p-2 box-branco">
-                <img style="max-width:100%;" src="{% static 'life_cycle_canvas/img/logo_lcc.png' %}"
+                <img style="max-width:100%;" src="{% static 'life_cycle_canvas/img/logo_lcc.jpeg' %}"
                      alt="LifeCycleCanvas">
             </div>
         </div>
@@ -228,11 +256,45 @@
                 </div>
                 <div class="box-conteudo" style="background: {{ categoria.codigo_cor_hex }}">
                     {% for item in categoria.post_its %}
-                        <div class="box-postit">
-                            <div class="box-conteudo">
+                        <div class="box-postit" style="{% if item.versao_projeto.codigo < versao_projeto.codigo and item.oculto %}display:none;{% endif %}">
+                            <div class="box-conteudo {% if item.qtd_solicitacoes_mudancas_pendentes %}riscado{% endif %}">
                                 <p>
                                     {{ item.conteudo }}
                                 </p>
+
+                                {% if item.qtd_solicitacoes_mudancas_pendentes %}
+                                    {% for mudanca in item.solicitacaomudanca_set.all %}
+                                        <div class="box-postit mudanca">
+                                            <div class="box-conteudo">
+                                                <p>
+                                                    {{ mudanca.solicitacao }}
+                                                    <br/>
+                                                    <small style="font-weight: bold;">
+                                                        <span class="badge badge-info">Solicitado por: {{ mudanca.solicitante }}</span>
+                                                        <br/>
+                                                        <span class="badge badge-info">Origem: {{ mudanca.origem }}</span>
+                                                    </small>
+
+                                                    {% if not mudanca.status %}
+                                                        <br/>
+                                                        <br/>
+                                                        <a href="/dashboard/rejeitar/{{ mudanca.pk }}/" class="btn btn-sm btn-block btn-danger">
+                                                            Rejeitar
+                                                        </a>
+                                                        <br/>
+                                                        <a href="/dashboard/aprovar_com_replanejamento/{{ mudanca.pk }}/" class="btn btn-sm btn-block btn-warning">
+                                                            Aprovar com Replanejamento
+                                                        </a>
+                                                        <br/>
+                                                        <a href="/dashboard/aprovar/{{ mudanca.pk }}/" class="btn btn-sm btn-block btn-success">
+                                                            Aprovar
+                                                        </a>
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}
@@ -262,7 +324,8 @@
                     <p>
                         <select id="versao_selecionada">
                             {% for versao in versoes_projeto %}
-                                <option {% if versao.codigo == versao_projeto.codigo %}selected="selected"{% endif %} value="/dashboard/{{ obj.pk }}/versao/{{ versao.codigo }}/">{{ versao.codigo }}</option>
+                                <option {% if versao.codigo == versao_projeto.codigo %}selected="selected"{% endif %}
+                                        value="/dashboard/{{ obj.pk }}/versao/{{ versao.codigo }}/">{{ versao.codigo }}</option>
                             {% endfor %}
                         </select>
                     </p>

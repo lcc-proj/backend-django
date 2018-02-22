@@ -5,16 +5,17 @@ from django.contrib import admin
 
 from life_cycle_canvas.models import VersaoProjeto, CategoriaCanvas, Projeto, ItemCategoriaCanvas, SolicitacaoMudanca
 
+admin.site.site_header = 'LifeCycleCanvas Change Manager'
 
-@admin.register(CategoriaCanvas)
-class CategoriaCanvasAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'descricao', 'icone', 'codigo_cor_hex')
+# @admin.register(CategoriaCanvas)
+# class CategoriaCanvasAdmin(admin.ModelAdmin):
+#     list_display = ('nome', 'descricao', 'icone', 'codigo_cor_hex')
 
 
 @admin.register(ItemCategoriaCanvas)
 class ItemCategoriaCanvasAdmin(admin.ModelAdmin):
     list_display = ('conteudo', 'categoria')
-    exclude = ('data_cadastro', 'data_atualizacao', 'usuario_atualizacao', '')
+    exclude = ('data_cadastro', 'data_atualizacao', 'usuario_atualizacao', 'oculto')
 
 
 @admin.register(Projeto)
@@ -46,4 +47,4 @@ class SolicitacaoMudancaAdmin(admin.ModelAdmin):
     )
     search_fields = ('solicitacao',)
     list_filter = ('status',)
-    exclude = ('versao_anterior_projeto', 'versao_projeto', 'usuario_cadastro', 'data_cadastro', 'usuario_avaliacao', 'data_avaliacao')
+    exclude = ('versao_anterior_projeto', 'versao_projeto', 'data_cadastro', 'usuario_avaliacao', 'data_avaliacao', 'parecer', 'status')

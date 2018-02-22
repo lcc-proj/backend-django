@@ -25,7 +25,7 @@ SECRET_KEY = 't!8y*&m6&@66jz&l9hc_qn&3706*$w)!)mtppd@)4x)fnm$uhy'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'life_cycle_canvas'
 ]
 

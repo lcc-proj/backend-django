@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import copy
 from tabnanny import verbose
 
 from django.db import models
@@ -85,13 +86,20 @@ class ItemCategoriaCanvas(models.Model):
     data_atualizacao = models.DateTimeField(auto_now=True, null=True, blank=True)
     usuario_atualizacao = models.ForeignKey('auth.User', related_name='usuario_atualizacao_item_canvas', null=True, blank=True)
     versao_projeto = models.ForeignKey('life_cycle_canvas.VersaoProjeto', verbose_name='Versão do Projeto')
+    oculto = models.BooleanField(default=False)
+
+    def houve_mudanca(self):
+        return self.solicitacaomudanca_set.filter(status__in=[SolicitacaoMudanca.STATUS_APROVADA, SolicitacaoMudanca.STATUS_APROVADA_REPLANEJAMENTO]).exists()
+
+    def qtd_solicitacoes_mudancas_pendentes(self):
+        return self.solicitacaomudanca_set.filter(status__isnull=True).count()
 
     def __unicode__(self):
-        return self.conteudo
+        return '%s (%s)' % (self.conteudo, self.categoria)
 
     class Meta:
-        verbose_name = 'Item do Canvas'
-        verbose_name_plural = 'Itens do Canvas'
+        verbose_name = 'Post-it'
+        verbose_name_plural = 'Post-its'
 
 
 class SolicitacaoMudanca(models.Model):
@@ -111,13 +119,43 @@ class SolicitacaoMudanca(models.Model):
     solicitacao = models.TextField(verbose_name='Solicitação')
     solicitante = models.CharField(max_length=120, verbose_name='Solicitante')
     origem = models.CharField(max_length=120, verbose_name='Origem')
-    parecer = models.CharField(max_length=120, verbose_name='Parecer')
-    status = models.PositiveIntegerField(choices=STATUS_CHOICES)
+    parecer = models.CharField(max_length=120, verbose_name='Parecer', null=True, blank=True)
+    status = models.PositiveIntegerField(choices=STATUS_CHOICES, null=True, blank=True)
 
     usuario_cadastro = models.ForeignKey('auth.User', related_name='usuario_cadastro_solicitacao_mudanca')
     data_cadastro = models.DateTimeField(auto_now_add=True)
-    usuario_avaliacao = models.ForeignKey('auth.User', related_name='usuario_avaliacao_solicitacao_mudanca')
-    data_avaliacao = models.DateTimeField()
+    usuario_avaliacao = models.ForeignKey('auth.User', related_name='usuario_avaliacao_solicitacao_mudanca', null=True, blank=True)
+    data_avaliacao = models.DateTimeField(null=True, blank=True)
+
+    def aprovar(self, status):
+        if not self.status:
+            projeto = self.versao_anterior_projeto.projeto
+            novo_codigo = projeto.get_codigo_versao_atual() + 1
+
+            self.versao_projeto = VersaoProjeto.objects.create(
+                codigo=novo_codigo,
+                projeto=projeto
+            )
+            self.status = status
+            self.save()
+
+            self.item_mudanca.oculto = True
+            self.item_mudanca.save()
+
+            novo_item = copy.copy(self.item_mudanca)
+            novo_item.pk = None
+            novo_item.versao_projeto = self.versao_projeto
+            novo_item.conteudo = self.solicitacao
+            novo_item.save()
+
+    def rejeitar(self):
+        self.status = self.STATUS_REJEITADA
+        self.save()
+
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
+        self.versao_anterior_projeto = self.item_mudanca.versao_projeto
+        super(SolicitacaoMudanca, self).save(force_insert=False, force_update=False, using=None, update_fields=None)
+
 
     def __unicode__(self):
         return self.solicitacao
