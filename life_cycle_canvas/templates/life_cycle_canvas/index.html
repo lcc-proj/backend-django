@@ -6,38 +6,20 @@
     <meta charset="UTF-8">
     <title>LifeCycleCanvas</title>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
-          integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <script
-            src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'life_cycle_canvas/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'life_cycle_canvas/css/fontawesome-all.min.css' %}">
+    <script src="{% static 'life_cycle_canvas/js/jquery.min.js' %}"></script>
+    <script src="{% static 'life_cycle_canvas/js/bootstrap.min.js' %}"></script>
 
     <style>
         body {
             background: #cdb68d;
         }
 
-        .d-flex > div {
-            margin: 10px 5px;
-        }
-
-        .flex-row:nth-child(1) > div {
-            width: 300px;
-        }
-
-        .flex-row:nth-child(2) > .flex-column > div, .flex-row:nth-child(3) > div {
-            width: 273px;
-        }
-
         .box-branco {
             background: #fff;
             border-radius: 10px;
+            min-height: 132px;
         }
 
         .box-roxo {
@@ -60,6 +42,12 @@
         .box-roxo .box-conteudo {
             padding: 5px 10px;
             min-height: 104px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .box-roxo .box-conteudo.branco {
+            background: #fff;
         }
 
         .box-roxo .box-conteudo .form-group {
@@ -91,118 +79,122 @@
     </style>
 </head>
 <body>
+
 <div class="container-fluid">
-    <div class="d-flex flex-row">
-        <div class="p-2 box-branco">
-            <img style="max-width:100%;" src="{% static 'life_cycle_canvas/img/logo_lcc.png' %}" alt="LifeCycleCanvas">
+    <div class="row mt-4">
+        <div class="col-sm mb-4">
+            <div class="p-2 box-branco">
+                <img style="max-width:100%;" src="{% static 'life_cycle_canvas/img/logo_lcc.png' %}"
+                     alt="LifeCycleCanvas">
+            </div>
         </div>
-        <div class="box-roxo">
-            <div class="box-titulo">Projeto</div>
-            <div class="box-conteudo">
-                <div class="form-group">
-                    <label for="titulo">Título</label>
-                    <input type="email" name="titulo" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="pitch">Pitch</label>
-                    <input type="email" name="pitch" class="form-control">
+        <div class="col-sm">
+            <div class="box-roxo">
+                <div class="box-titulo">Projeto</div>
+                <div class="box-conteudo">
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input type="email" name="titulo" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="pitch">Pitch</label>
+                        <input type="email" name="pitch" class="form-control">
+                    </div>
                 </div>
             </div>
         </div>
-        <div>
+        <div class="col-sm">
             <div class="box-roxo">
-                <div class="box-titulo">Indicador Geral de Desempenho do Projeto</div>
+                <div class="box-titulo" style="font-size:11px;">Indicador Geral de Desempenho do Projeto</div>
                 <div class="box-conteudo">
                 </div>
             </div>
         </div>
-        <div>
+        <div class="col-sm">
             <div class="box-roxo">
                 <div class="box-titulo">Ciclo de Vida</div>
                 <div class="box-conteudo">
                 </div>
             </div>
         </div>
-        <div style="margin:0px;">
-            <div class="d-flex flex-column">
-                <div style="margin-bottom:0; width: 273px;">
-                    <div class="input-group mt-4 mb-2">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Data</span>
-                        </div>
-                        <input type="text" class="form-control">
+        <div class="col-sm">
+            <div style="margin-bottom:0;">
+                <div class="input-group mt-4 mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Data</span>
                     </div>
-                    <div class="input-group mb-2">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1">Local</span>
-                        </div>
-                        <input type="text" class="form-control">
+                    <input type="text" class="form-control">
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="basic-addon1">Local</span>
                     </div>
+                    <input type="text" class="form-control">
                 </div>
             </div>
         </div>
     </div>
-    <div class="d-flex flex-row">
+
+    <div class="row">
         {% for categoria in categorias %}
-            {% if forloop.first %}
-                <div class="d-flex flex-column">
+            {% if forloop.counter0|divisibleby:3 %}
+                <div class="col-sm" style="padding-left:0; padding-right: 0;">
+                    <div class="col-sm" style="padding-left:0; padding-right: 0;">
             {% endif %}
 
-        <div style="margin-left:0; margin-right:0;">
-            <div class="box-roxo">
-                <div class="box-titulo" style="background: {{ categoria.codigo_cor_hex }}; border-bottom: 1px solid #fff;">
-                    <span class="fa {{ categoria.icone }}"></span> &nbsp; {{ categoria.nome }}
-                    <br/>
-                    <small>{{ categoria.descricao }}</small>
+            <div class="col-sm mb-4" style="margin-right: 0; margin-left: 0;">
+                <div class="box-roxo">
+                    <div class="box-titulo"
+                         style="background: {{ categoria.codigo_cor_hex }} url('/static/life_cycle_canvas/img/bg-box-titulo.png') repeat-x; border-bottom: 1px solid #fff;">
+                        <i class="fa {{ categoria.icone }}"></i> &nbsp; {{ categoria.nome }}
+                        <br/>
+                        <small>{{ categoria.descricao }}</small>
+                    </div>
+                    <div class="box-conteudo" style="background: {{ categoria.codigo_cor_hex }}">
+                    </div>
                 </div>
-                <div class="box-conteudo" style="background: {{ categoria.codigo_cor_hex }}">
+            </div>
+
+            {% if forloop.counter|divisibleby:3 %}
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        {% if forloop.counter|divisibleby:3 %}
-            </div>
-            <div class="d-flex flex-column">
-        {% endif %}
-
-        {% if forloop.last %}
-            </div>
-        {% endif %}
+            {% endif %}
         {% endfor %}
     </div>
-    <div class="d-flex flex-row">
-        <div>
+
+    <div class="row mb-4">
+        <div class="col-sm">
             <div class="box-roxo">
                 <div class="box-titulo">Lições aprendidas</div>
-                <div class="box-conteudo">
+                <div class="box-conteudo branco">
                 </div>
             </div>
         </div>
-        <div>
+        <div class="col-sm">
             <div class="box-roxo">
                 <div class="box-titulo">Versão</div>
-                <div class="box-conteudo">
+                <div class="box-conteudo branco">
                 </div>
             </div>
         </div>
-        <div>
+        <div class="col-sm">
             <div class="box-roxo">
                 <div class="box-titulo">Gerente do Projeto</div>
-                <div class="box-conteudo">
+                <div class="box-conteudo branco">
                 </div>
             </div>
         </div>
-        <div>
+        <div class="col-sm">
             <div class="box-roxo">
                 <div class="box-titulo">Patrocinador</div>
-                <div class="box-conteudo">
+                <div class="box-conteudo branco">
                 </div>
             </div>
         </div>
-        <div>
+        <div class="col-sm">
             <div class="box-roxo">
                 <div class="box-titulo">Cliente</div>
-                <div class="box-conteudo">
+                <div class="box-conteudo branco">
                 </div>
             </div>
         </div>
