@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +58,7 @@
         }
 
         .box-roxo .box-conteudo {
-            padding: 5px;
+            padding: 5px 10px;
             min-height: 104px;
         }
 
@@ -79,7 +81,7 @@
             background: #964ba2;
             color: #fff;
             font-size: 10px;
-            height: 55px;
+            height: 40px;
             border-radius: 10px;
         }
 
@@ -92,7 +94,7 @@
 <div class="container-fluid">
     <div class="d-flex flex-row">
         <div class="p-2 box-branco">
-            LifeCycleCanvas
+            <img style="max-width:100%;" src="{% static 'life_cycle_canvas/img/logo_lcc.png' %}" alt="LifeCycleCanvas">
         </div>
         <div class="box-roxo">
             <div class="box-titulo">Projeto</div>
@@ -124,7 +126,7 @@
         <div style="margin:0px;">
             <div class="d-flex flex-column">
                 <div style="margin-bottom:0; width: 273px;">
-                    <div class="input-group mb-2">
+                    <div class="input-group mt-4 mb-2">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1">Data</span>
                         </div>
