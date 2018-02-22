@@ -11,6 +11,19 @@
     <script src="{% static 'life_cycle_canvas/js/jquery.min.js' %}"></script>
     <script src="{% static 'life_cycle_canvas/js/bootstrap.min.js' %}"></script>
 
+    <script>
+        $(function () {
+            // bind change event to select
+            $('#versao_selecionada').on('change', function () {
+                var url = $(this).val(); // get selected value
+                if (url) { // require a URL
+                    window.location = url; // redirect
+                }
+                return false;
+            });
+        });
+    </script>
+
     <style>
         body {
             background: #cdb68d;
@@ -28,7 +41,25 @@
             font-size: 10px;
         }
 
-        .box-roxo .box-titulo {
+        .box-postit {
+            background: yellow;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .box-postit > .box-conteudo {
+            background: yellow;
+            border-radius: 10px;
+            min-height: 60px;
+        }
+
+        .box-postit > .box-conteudo p {
+            padding: 10px;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .box-roxo > .box-titulo {
             background: #964ba2;
             text-align: center;
             font-size: 12px;
@@ -39,29 +70,37 @@
             font-weight: bold;
         }
 
-        .box-roxo .box-conteudo {
+        .box-roxo > .box-conteudo {
             padding: 5px 10px;
             min-height: 104px;
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
+            text-align: center;
         }
 
-        .box-roxo .box-conteudo.branco {
+        .box-roxo > .box-conteudo > p {
+            font-size: 18px;
+            margin-top: 30px;
+            font-weight: bold;
+        }
+
+        .box-roxo > .box-conteudo.branco {
             background: #fff;
         }
 
-        .box-roxo .box-conteudo .form-group {
+        .box-roxo > .box-conteudo .form-group {
             margin-bottom: 5px;
         }
 
-        .box-roxo .box-conteudo .form-group label {
+        .box-roxo > .box-conteudo .form-group label {
             margin-bottom: 2px;
         }
 
-        .box-roxo .box-conteudo .form-control {
+        .box-roxo > .box-conteudo .form-control {
             padding: 2px;
             height: 25px;
             border-radius: 5px;
+            font-size: 11px;
         }
 
         .input-group-text {
@@ -75,6 +114,38 @@
 
         .form-control {
             border-radius: 10px;
+        }
+
+        .indicador_desempenho {
+            margin: 0 auto;
+            margin-top: 10px;
+            background: #fff;
+            border-radius: 10px;
+            padding: 8px;
+            height: 100%;
+            border: 2px solid #964ba2;
+            width: 70px;
+            height: 70px;
+        }
+
+        .indicador_desempenho_cor {
+            text-align: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            background: #fff;
+        }
+
+        .verde {
+            background: darkgreen;
+        }
+
+        .amarelo {
+            background: yellow;
+        }
+
+        .vermelho {
+            background: red;
         }
     </style>
 </head>
@@ -94,11 +165,13 @@
                 <div class="box-conteudo">
                     <div class="form-group">
                         <label for="titulo">Título</label>
-                        <input type="email" name="titulo" class="form-control">
+                        <input type="email" name="titulo" value="{{ obj.titulo }}" readonly="readonly"
+                               class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="pitch">Pitch</label>
-                        <input type="email" name="pitch" class="form-control">
+                        <label for="pitch">Alias</label>
+                        <input type="email" name="pitch" value="{{ obj.pitch }}" readonly="readonly"
+                               class="form-control">
                     </div>
                 </div>
             </div>
@@ -107,6 +180,9 @@
             <div class="box-roxo">
                 <div class="box-titulo" style="font-size:11px;">Indicador Geral de Desempenho do Projeto</div>
                 <div class="box-conteudo">
+                    <div class="indicador_desempenho">
+                        <div class="indicador_desempenho_cor verde"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,13 +199,13 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">Data</span>
                     </div>
-                    <input type="text" class="form-control">
+                    <input type="text" value="{{ obj.data }}" readonly="readonly" class="form-control">
                 </div>
                 <div class="input-group mb-2">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">Local</span>
                     </div>
-                    <input type="text" class="form-control">
+                    <input type="text" value="{{ obj.local }}" readonly="readonly" class="form-control">
                 </div>
             </div>
         </div>
@@ -139,26 +215,35 @@
         {% for categoria in categorias %}
             {% if forloop.counter0|divisibleby:3 %}
                 <div class="col-sm" style="padding-left:0; padding-right: 0;">
-                    <div class="col-sm" style="padding-left:0; padding-right: 0;">
+                <div class="col-sm" style="padding-left:0; padding-right: 0;">
             {% endif %}
 
-            <div class="col-sm mb-4" style="margin-right: 0; margin-left: 0;">
-                <div class="box-roxo">
-                    <div class="box-titulo"
-                         style="background: {{ categoria.codigo_cor_hex }} url('/static/life_cycle_canvas/img/bg-box-titulo.png') repeat-x; border-bottom: 1px solid #fff;">
-                        <i class="fa {{ categoria.icone }}"></i> &nbsp; {{ categoria.nome }}
-                        <br/>
-                        <small>{{ categoria.descricao }}</small>
-                    </div>
-                    <div class="box-conteudo" style="background: {{ categoria.codigo_cor_hex }}">
-                    </div>
+        <div class="col-sm mb-4" style="margin-right: 0; margin-left: 0;">
+            <div class="box-roxo">
+                <div class="box-titulo"
+                     style="background: {{ categoria.codigo_cor_hex }} url('/static/life_cycle_canvas/img/bg-box-titulo.png') repeat-x; border-bottom: 1px solid #fff;">
+                    <i class="fa {{ categoria.icone }}"></i> &nbsp; {{ categoria.nome }}
+                    <br/>
+                    <small>{{ categoria.descricao }}</small>
+                </div>
+                <div class="box-conteudo" style="background: {{ categoria.codigo_cor_hex }}">
+                    {% for item in categoria.post_its %}
+                        <div class="box-postit">
+                            <div class="box-conteudo">
+                                <p>
+                                    {{ item.conteudo }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
+        </div>
 
-            {% if forloop.counter|divisibleby:3 %}
-                    </div>
-                </div>
-            {% endif %}
+        {% if forloop.counter|divisibleby:3 %}
+            </div>
+            </div>
+        {% endif %}
         {% endfor %}
     </div>
 
@@ -174,6 +259,13 @@
             <div class="box-roxo">
                 <div class="box-titulo">Versão</div>
                 <div class="box-conteudo branco">
+                    <p>
+                        <select id="versao_selecionada">
+                            {% for versao in versoes_projeto %}
+                                <option {% if versao.codigo == versao_projeto.codigo %}selected="selected"{% endif %} value="/dashboard/{{ obj.pk }}/versao/{{ versao.codigo }}/">{{ versao.codigo }}</option>
+                            {% endfor %}
+                        </select>
+                    </p>
                 </div>
             </div>
         </div>
@@ -181,6 +273,9 @@
             <div class="box-roxo">
                 <div class="box-titulo">Gerente do Projeto</div>
                 <div class="box-conteudo branco">
+                    <p>
+                        {{ obj.gerente_projeto.get_full_name }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -188,6 +283,9 @@
             <div class="box-roxo">
                 <div class="box-titulo">Patrocinador</div>
                 <div class="box-conteudo branco">
+                    <p>
+                        {{ obj.patrocinador }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -195,6 +293,9 @@
             <div class="box-roxo">
                 <div class="box-titulo">Cliente</div>
                 <div class="box-conteudo branco">
+                    <p>
+                        {{ obj.cliente }}
+                    </p>
                 </div>
             </div>
         </div>
